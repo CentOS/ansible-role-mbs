@@ -1,0 +1,10 @@
+---
+
+- name: Local test to get the mbs-install-platform.sh file in /tmp
+  connection: ansible.netcommon.network_cli
+  gather_facts: false
+  hosts: localhost
+  vars_files:
+    - defaults/main.yml
+  tasks:
+    - include_tasks: tasks/local.yml

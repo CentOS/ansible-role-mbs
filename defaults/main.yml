@@ -1,5 +1,6 @@
 ---
 # defaults file for mbs
+mbs_platform_url: "https://gitlab.com/redhat/centos-stream/modules/platform/-/raw/el9/platform.yaml"
 mbs_buildtools_repo_gpgkey: "{{ kojid_buildtools_repo_gpgkey | default('') }}"
 mbs_env: "{{ centos_infra_env | default('prod') }}"
 mbs_frontend: True

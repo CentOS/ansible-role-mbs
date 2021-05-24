@@ -138,6 +138,11 @@
   changed_when: "'Running upgrade' in mbs_db_output.stdout"
   failed_when: mbs_db_output.rc != 0
 
+- name: Download default platform module
+  get_url:
+    url: "{{ mbs_platform_url }}"
+    dest: /etc/module-build-service/default-modules/
+
 - block:
     - name: Import default modules
       copy:
