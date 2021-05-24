@@ -1,0 +1,8 @@
+# Do things locally
+
+- name: create mbs script to install default platform
+  template:
+    src: mbs/mbs-install-platform.sh.j2
+    dest: /tmp/mbs-install-platform.sh
+    mode: 0755
+  delegate_to: localhost

@@ -1,5 +1,8 @@
 ## Ansible Role: mbs
-This mbs role is used in the CentOS Infra.
+This mbs role is used in the CentOS Infra. ( mbs.stream.rdu2.redhat.com )
+
+Based off of https://pagure.io/fedora-infra/ansible/blob/main/f/roles/mbs/common
+etc.
 
 It surely depends (see dependencies below) on some other roles.
 
