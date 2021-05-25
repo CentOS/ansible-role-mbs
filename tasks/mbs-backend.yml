@@ -160,7 +160,7 @@
 
 - name: Copy mbs-backend koji keytab
   copy:
-    src: "{{ mbs_pki_store }}/krb5/{{ mbs_config_krb_keytab }}"
+    src: "{{ pkistore }}/krb5/{{ mbs_config_krb_keytab }}"
     dest: /etc/module-build-service/{{ mbs_config_krb_keytab }}
     owner: fedmsg
     group: fedmsg

@@ -13,7 +13,6 @@
     tasks_from: pki-tls
   vars:
     pki_hostname: "{{ mbs_frontend_host }}"
-    pkistore: "{{ mbs_pki_store }}"
   when: mbs_frontend_https_enabled | bool
 
 - name: Install mbs-frontend packages
@@ -38,7 +37,7 @@
 
 - name: Ensure we have proper httpd keytab
   copy:
-    src: "{{ mbs_pki_store }}/krb5/{{ mbs_frontend_krb_keytab }}"
+    src: "{{ pkistore }}/krb5/{{ mbs_frontend_krb_keytab }}"
     dest: "/etc/httpd/conf.d/{{ mbs_frontend_krb_keytab }}"
     owner: apache
   when: (mbs_config_no_auth | bool) == False
