@@ -29,7 +29,7 @@ mbs_kojihub_use_fast_upload: true
 mbs_kojihub_auth_type: kerberos
 mbs_kojihub_kerberos_rdns: false
 #mbs config.py
-mbs_config_broker_url: 'amqp://{{ mbs_rabbitmq_username }}@{{ mbs_rabbitmq_password }}:localhost:5627/{{ mbs_rabbitmq_vhost }}'
+mbs_config_broker_url: 'amqp://{{ mbs_rabbitmq_username }}:{{ mbs_rabbitmq_password }}@localhost/{{ mbs_rabbitmq_vhost }}'
 mbs_config_debug: false
 mbs_config_secret_key: a1b2c3d4
 mbs_config_database_url: postgresql://{{ mbs_postgres_username }}:{{ mbs_postgres_password }}@{{ mbs_postgres_hostname }}/{{ mbs_postgres_database }}
@@ -54,7 +54,7 @@ mbs_config_log_backend: file
 mbs_config_log_file: /var/log/mbs/module_build_service.log
 mbs_config_log_level: info
 mbs_config_logs_build_dir: /var/tmp
-mbs_config_krb_keytab: mbs-{{ mbs_env }}.centos.org.keytab
+mbs_config_krb_keytab: /etc/module-build-service/mbs-{{ mbs_env }}.centos.org.keytab
 mbs_config_krb_principal: cbs-koji@DEV.CENTOS.ORG
 mbs_config_allowed_groups:
   - packager
