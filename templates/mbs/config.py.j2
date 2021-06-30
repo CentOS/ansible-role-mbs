@@ -123,8 +123,9 @@ class ProdConfiguration(object):
     }
 
     # Settings for Kerberos (backend)
-    KRB_KEYTAB = '{{ mbs_config_krb_keytab }}'
+    KRB_KEYTAB = '/etc/module-build-service/{{ mbs_config_krb_keytab }}'
     KRB_PRINCIPAL = '{{ mbs_config_krb_principal }}'
+    KRB_CCACHE = '/var/cache/fedmsg/mbs-krb5cc'
 
     NUM_WORKERS = {{ mbs_num_workers }}
 

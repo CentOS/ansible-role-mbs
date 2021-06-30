@@ -6,8 +6,6 @@ topurl = {{ mbs_kojihub_top_url }}
 authtype = {{ mbs_kojihub_auth_type }}
 {% if  mbs_kojihub_auth_type == 'kerberos' %}
 krb_rdns = {{ mbs_kojihub_kerberos_rdns | bool }}
-;the principal to auth as for automated clients
-principal = {{ mbs_config_krb_principal }}
 ;the keytab to auth as for automated clients
 keytab = /etc/module-build-service/{{ mbs_config_krb_keytab }}
 {% endif %}

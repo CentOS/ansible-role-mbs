@@ -1,6 +1,5 @@
 --- 
 # base system setup
-- include_tasks: local.yml
 - include_tasks: system.yml
 # rabbitmq
 - include_tasks: rabbitmq.yml
