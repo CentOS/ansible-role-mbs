@@ -14,6 +14,10 @@
   vars:
     pki_hostname: "{{ mbs_frontend_host }}"
   when: mbs_frontend_https_enabled | bool
+  tags:
+    - pki
+    - tls
+    - certs
 
 - name: Install mbs-frontend packages
   yum:
