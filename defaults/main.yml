@@ -1,5 +1,9 @@
 ---
 # defaults file for mbs
+
+# Which module-build-service pkg we want to deploy/install (pinning a version instead of latest)
+mbs_pkg_version: 3.6.1-7
+
 mbs_platform_url: "https://gitlab.com/redhat/centos-stream/modules/platform/-/raw/el9/platform.yaml"
 mbs_buildtools_repo_gpgkey: "{{ kojid_buildtools_repo_gpgkey | default('') }}"
 mbs_env: "{{ centos_infra_env | default('prod') }}"
@@ -12,17 +16,20 @@ mbs_num_workers: 3
 mbs_celery_max_worker_tasks: 10
 mbs_default_modules_dir: default-modules
 mbs_pki_store: "{{ pkistore | default('./') }}"
+
 # psql
 mbs_postgres_local: True
 mbs_postgres_hostname: localhost
 mbs_postgres_username: mbs
 mbs_postgres_password: mbs
 mbs_postgres_database: mbs
+
 # rabbitmq
 mbs_rabbitmq_local: True
 mbs_rabbitmq_vhost: mbs
 mbs_rabbitmq_username: mbs
 mbs_rabbitmq_password: mbs
+
 # kojihub
 mbs_kojihub_top_url: https://cbs.centos.org
 mbs_kojihub_use_fast_upload: true
@@ -99,11 +106,14 @@ mbs_product_pages_schedule_task_name: ''
 mbs_product_pages_module_streams: {}
 mbs_scratch_build_only_branches: ["^private-.*"]
 mbs_fedmsg_endpoints: ["tcp://127.0.0.1:3001"]
+
 # fedora-messaging
 mbs_fedora_messaging_addrs: ["tcp://hub.fedoraproject.org:9940"]
+
 # relay
 mbs_relay_inbound_addrs: ["tcp://127.0.0.1:3999"]
 mbs_relay_outbound_addrs: ["tcp://127.0.0.1:9941"]
+
 # moksha
 mbs_moksha_monitoring_addr: tcp://0.0.0.0:10030
 # frontend

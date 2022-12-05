@@ -1,0 +1,10 @@
+# el8 specific variables
+
+mbs_backend_pkgs:
+  - module-build-service-{{ mbs_pkg_version }}.el8
+  - python3-stevedore
+  - python3-psycopg2
+  - python3-vine < 5.0.0
+  - python3-pungi >= 4.2.3
+  - python3-qpid-proton
+
