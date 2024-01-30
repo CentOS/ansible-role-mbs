@@ -4,6 +4,7 @@
     name: "{{ mbs_backend_pkgs }}"
     state: installed
     update_cache: true
+  register: mbs_pkgs  
   notify:
     - Restart apache
     - Restart fedmsg-hub
@@ -127,10 +128,12 @@
   
 - name: Upgrade database
   command: /usr/bin/mbs-manager db upgrade
-  when: mbs_upgrade_db
   register: mbs_db_output
   changed_when: "'Running upgrade' in mbs_db_output.stdout"
   failed_when: mbs_db_output.rc != 0
+  when: 
+    - mbs_upgrade_db
+    - mbs_pkgs is changed
 
 - name: Download default platform module
   get_url:
