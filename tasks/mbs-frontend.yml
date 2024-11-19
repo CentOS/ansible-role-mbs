@@ -1,14 +1,14 @@
 ---
 - name: Configuring httpd
-  include_role:
+  ansible.builtin.include_role:
     name: httpd
 
-- include_role:
+- ansible.builtin.include_role:
     name: httpd
   vars:
     - httpd_tls: "{{ mbs_frontend_https_enabled | bool }}"
  
-- include_role:
+- ansible.builtin.include_role:
     name: httpd
     tasks_from: pki-tls
   vars:
@@ -20,7 +20,7 @@
     - certs
 
 - name: Install mbs-frontend packages
-  yum:
+  ansible.builtin.yum:
     name:
       - python3-mod_wsgi
       - module-build-service
@@ -30,7 +30,7 @@
     - Restart apache
 
 - name: Copy mbs httpd config
-  template:
+  ansible.builtin.template:
     src: "mbs/mbs.conf.j2"
     dest: "/etc/httpd/conf.d/mbs.conf"
     owner: apache
@@ -47,12 +47,12 @@
   when: (mbs_config_no_auth | bool) == False
 
 - name: Ensure /usr/share/mbs folder exists
-  file:
+  ansible.builtin.file:
     path: /usr/share/mbs/
     state: directory
   
 - name: Copy custom wsgi file
-  template:
+  ansible.builtin.template:
     src: mbs/mbs.wsgi.j2
     dest: /usr/share/mbs/mbs.wsgi
     mode: 0644
@@ -60,7 +60,7 @@
     - Restart apache
 
 - name: Ensure selinux lets httpd talk to postgres, memcached, and mail
-  seboolean:
+  ansible.posix.seboolean:
     name: "{{ item }}"
     state: true
     persistent: true

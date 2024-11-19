@@ -1,6 +1,6 @@
 ---
 - name: Install mbs-backend packages
-  yum:
+  ansible.builtin.yum:
     name: "{{ mbs_backend_pkgs }}"
     state: installed
     update_cache: true
@@ -10,7 +10,7 @@
     - Restart fedmsg-hub
 
 - name: Kill development configs
-  file:
+  ansible.builtin.file:
     path: /etc/fedmsg.d/{{ item }}
     state: absent
   changed_when: true
@@ -22,14 +22,14 @@
     - Restart fedmsg-hub
 
 - name: Ensure log dir exists
-  file:
+  ansible.builtin.file:
     path: "{{ mbs_config_log_file | dirname }}"
     mode: 0777
     state: directory
   when: mbs_config_log_backend == 'file'
 
 - name: copy app configuration
-  template:
+  ansible.builtin.template:
     src: mbs/config.py.j2
     dest: /etc/module-build-service/config.py
     owner: root
@@ -38,9 +38,11 @@
   notify:
     - Restart apache
     - Restart fedmsg-hub
+  tags:
+    - messaging
 
 - name: copy koji configuration
-  template:
+  ansible.builtin.template:
     src: mbs/koji.conf.j2
     dest: /etc/module-build-service/koji.conf
     owner: root
@@ -50,7 +52,7 @@
     - Restart fedmsg-hub
 
 - name: copy fedmsg configuration
-  template:
+  ansible.builtin.template:
     src: mbs/{{ item }}.j2
     dest: /etc/fedmsg.d/{{ item }}
     owner: root
@@ -66,9 +68,33 @@
   notify:
     - Restart apache
     - Restart fedmsg-hub
+  tags:
+    - umb
+    - messaging
+
+- block: 
+    - name: Copying needed umb tls certs
+      copy: 
+        src: "{{ pkistore }}/umb/{{ item }}"
+        dest: "/etc/module-build-service/{{ item }}"
+      with_items:
+        - "{{ mbs_umb_client_crt }}"
+        - "{{ mbs_umb_client_key }}"
+    - name: Ensuring we have umb plugin
+      ansible.builtin.yum:
+        name: mbs-messaging-umb
+        state: installed
+    - name: Configuring umb messaging plugin
+      ansible.builtin.template:
+        src: mbs-messaging-umb/config.py.j2
+        dest: /etc/mbs-messaging-umb/config.py
+
+  when: mbs_config_messaging == 'umb'
+  tags:
+    - umb
 
 - name: create /var/cache/fedmsg/ directory for krb ccache
-  file:
+  ansible.builtin.file:
     path: /var/cache/fedmsg/
     state: directory
     owner: fedmsg
@@ -76,7 +102,7 @@
     mode: 0750
   
 - name: Add the systemd service files
-  template:
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: root
@@ -92,7 +118,7 @@
     - Restart mbs workers
 
 - name: Enable the MBS workers
-  systemd:
+  ansible.builtin.systemd:
     name: "mbs-worker@{{ item }}"
     daemon_reload: yes
     enabled: yes
@@ -100,7 +126,7 @@
   with_sequence: start=0 end={{ mbs_num_workers - 1 }}
   
 - name: Start and enable mbs-poller service
-  systemd:
+  ansible.builtin.systemd:
     name: mbs-poller
     enabled: yes
     state: started
@@ -109,7 +135,7 @@
   service_facts: {}
 
 - name: Disable any extra MBS workers
-  systemd:
+  ansible.builtin.systemd:
     name: "mbs-worker@{{ worker_num }}"
     enabled: no
     state: stopped
@@ -119,7 +145,7 @@
   when: (worker_num | int) >= mbs_num_workers
   
 - name: create /etc/module-build-service/default-modules directory
-  file:
+  ansible.builtin.file:
     path: /etc/module-build-service/default-modules
     state: directory
     owner: root
@@ -136,7 +162,7 @@
     - mbs_pkgs is changed
 
 - name: Download default platform module
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ mbs_platform_url }}"
     dest: /etc/module-build-service/default-modules/
 
@@ -147,7 +173,7 @@
           dest: /etc/module-build-service/default-modules
       with_fileglob:
         - "{{ mbs_default_modules_dir }}/*.yaml"
-    - find:
+    - ansible.builtin.find:
         paths: /etc/module-build-service/default-modules/*.yaml
       register: default_modules
     - shell: /usr/bin/mbs-manager import_module {{ item }}

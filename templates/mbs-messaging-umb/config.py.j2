@@ -1,0 +1,45 @@
+message_mapping = {
+    'koji_build_change': {
+        'matches': [
+            '{{ mbs_umb_koji_topic_prefix }}.build.building',
+            '{{ mbs_umb_koji_topic_prefix }}.build.complete',
+            '{{ mbs_umb_koji_topic_prefix }}.build.deleted',
+            '{{ mbs_umb_koji_topic_prefix }}.build.failed',
+            '{{ mbs_umb_koji_topic_prefix }}.build.canceled',
+        ],
+        'topic': 'topic',
+        'msg_id': 'headers.message-id',
+        'task_id': 'body.info.task_id',
+        'build_new_state': 'body.new',
+        'build_name': 'body.info.name',
+        'build_version': 'body.info.version',
+        'build_release': 'body.info.release',
+        'module_build_id': None,
+        'state_reason': None,
+    },
+    'koji_tag_change': {
+        'matches': ['{{ mbs_umb_koji_topic_prefix }}.build.tag'],
+        'topic': 'topic',
+        'msg_id': 'headers.message-id',
+        'tag_name': 'body.tag.name',
+        'build_nvr': 'body.build.nvr',
+    },
+    'koji_repo_change': {
+        'matches': ['{{ mbs_umb_koji_topic_prefix }}.repo.done'],
+        'topic': 'topic',
+        'msg_id': 'headers.message-id',
+        'tag_name': 'body.repo.tag_name',
+    },
+    'mbs_module_state_change': {
+        'matches': ['{{ mbs_umb_mbs_topic_prefix }}.module.state.change'],
+        'topic': 'topic',
+        'msg_id': 'headers.message-id',
+        'module_build_id': 'body.id',
+        'module_build_state': 'body.state',
+    }
+}
+
+services = [{% for service in mbs_umb_services %}'{{ service }}'{%- if not loop.last -%},{% endif %}{% endfor %}]
+topic_suffix = '.>'
+dest_prefix = '{{ mbs_umb_mbs_topic_prefix }}'
+

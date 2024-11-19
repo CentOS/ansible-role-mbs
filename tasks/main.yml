@@ -15,6 +15,9 @@
 # msb-backend setup
 - include_tasks: mbs-backend.yml
   when: mbs_backend | bool
+  tags:
+    - messaging
+    - umb
 # msb-frontend setup
 - include_tasks: mbs-frontend.yml
   when: mbs_frontend | bool

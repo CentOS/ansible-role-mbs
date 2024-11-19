@@ -1,5 +1,7 @@
+{% if mbs_config_messaging == 'fedmsg' %}
 config = dict(
   endpoints={
     "supybot.value01": {{ mbs_fedora_messaging_addrs }}
   }
 )
+{% endif %}

@@ -13,7 +13,7 @@ class ProdConfiguration(object):
     NET_RETRY_INTERVAL = 30
 
     SYSTEM = '{{ mbs_config_system }}'
-    MESSAGING = '{{ mbs_config_messaging }}'  # in_memory, fedmsg or amq
+    MESSAGING = '{{ mbs_config_messaging }}'  # in_memory, fedmsg or umb
     MESSAGING_TOPIC_PREFIX = {{ mbs_config_messaging_topic_prefix }}
     KOJI_CONFIG = '{{ mbs_config_koji_file }}'
     KOJI_PROFILE = '{{ mbs_config_koji_profile }}'

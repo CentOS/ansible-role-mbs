@@ -1,3 +1,4 @@
+{% if mbs_config_messaging == 'fedmsg' %}
 config = {
   'zmq_enabled': True,
   'validate_signatures': False,
@@ -5,3 +6,18 @@ config = {
   # moksha-monitor-exporter's point of contact
   'moksha.monitoring.socket': '{{ mbs_moksha_monitoring_addr }}',
 }
+{% elif mbs_config_messaging == 'umb' %}
+config = {
+    'zmq_enabled': False,
+    'validate_signatures': False,
+    'endpoints': {},
+    'stomp_uri': '{{ mbs_umb_stomp_uri }}',
+    'stomp_heartbeat': 5000,
+    'stomp_ssl_crt': '/etc/module-build-service/{{ mbs_umb_client_crt }}',
+    'stomp_ssl_key': '/etc/module-build-service/{{ mbs_umb_client_key }}',
+    'stomp_ack_mode': 'auto',
+    'moksha.blocking_mode': True,
+    # moksha-monitor-exporter's point of contact
+    'moksha.monitoring.socket': '{{ mbs_moksha_monitoring_addr }}',
+}
+{% endif %}
