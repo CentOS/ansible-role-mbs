@@ -1,0 +1,33 @@
+- block:
+    - name: Configuring agent in Zabbix server
+      include_role:
+        name: zabbix-server
+        tasks_from: agent_config
+      vars:
+        zabbix_templates: "{{ mbs_zabbix_templates }}"
+        zabbix_groups: "{{ mbs_zabbix_groups }}"
+  delegate_to: "{{ zabbix_api_srv }}"  
+  tags:
+    - monitoring
+  when: zabbix_api_srv is defined
+
+- block:
+    - name: Importing MBS zabbix scripts
+      copy:
+        src: "zabbix/{{ item }}"
+        dest: "/usr/lib/zabbix/{{ item }}"
+        owner: root
+        mode: '0755'
+      with_items:
+        - zabbix-mbs-amqp-status.sh
+    - name: Zabbix cron jobs for mbs
+      cron:
+        name: "MBS zabbix job {{ item }}"
+        job: "/usr/lib/zabbix/{{ item }}"
+        hour: '*'
+        minute: '0'
+      with_items:
+        - zabbix-mbs-amqp-status.sh
+
+  tags:
+    - monitoring

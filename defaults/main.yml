@@ -153,3 +153,10 @@ mbs_frontend_krb_keytab: localhost.keytab
 mbs_frontend_krb_host: 'localhost'
 mbs_frontend_ldap_uri: ''
 mbs_frontend_ldap_dn_groups: ''
+
+
+# Zabbix monitoring additional groups and templates specific to mbs
+# Worth knowing that because we import other roles, it has already some attached templates like http server, and also one for tls monitoring, so just adding mbs features in new template
+mbs_zabbix_templates:
+  - Template CentOS MBS
+mbs_zabbix_groups: []  

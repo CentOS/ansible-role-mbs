@@ -25,3 +25,8 @@
     - pki
     - tls
     - certs
+
+- include_tasks: monitoring.yml
+  tags:
+    - monitoring
+    
