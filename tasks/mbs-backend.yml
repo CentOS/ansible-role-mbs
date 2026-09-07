@@ -40,6 +40,7 @@
     - Restart fedmsg-hub
   tags:
     - messaging
+    - config
 
 - name: copy koji configuration
   ansible.builtin.template:

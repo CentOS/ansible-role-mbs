@@ -102,7 +102,9 @@ class ProdConfiguration(object):
     KERBEROS_KEYTAB = '{{ mbs_frontend_krb_keytab }}'
     KERBEROS_HTTP_HOST = '{{ mbs_frontend_krb_host }}'
     LDAP_URI = '{{ mbs_frontend_ldap_uri }}'
-    LDAP_GROUPS_DN = '{{ mbs_frontend_ldap_dn_groups }}'
+    LDAP_USERS_DN = '{{ mbs_frontend_ldap_users_dn }}'
+    LDAP_USER = '{{ mbs_frontend_ldap_bind_user }}'
+    LDAP_PASSWORD = '{{ mbs_frontend_ldap_bind_password }}'
     ALLOWED_GROUPS = {{ mbs_config_allowed_groups }}
     ALLOWED_USERS = {{ mbs_config_allowed_users }}
     ADMIN_GROUPS = {{ mbs_config_admin_groups }}

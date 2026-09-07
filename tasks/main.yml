@@ -18,6 +18,8 @@
   tags:
     - messaging
     - umb
+    - config 
+
 # msb-frontend setup
 - include_tasks: mbs-frontend.yml
   when: mbs_frontend | bool
