@@ -1,0 +1,43 @@
+<VirtualHost *:443>
+ ServerAdmin webmaster@centos.org
+ ServerName {{ mbs_web_ui_hostname }}
+ DocumentRoot /var/www/html
+
+ Header always set Strict-Transport-Security "max-age=31536000"  
+ Header always set X-Frame-Options "SAMEORIGIN"
+ Header always set X-Xss-Protection "1; mode=block"
+ Header always set X-Content-Type-Options "nosniff"
+ Header always set Referrer-Policy "same-origin"
+ RequestHeader set X-Forwarded-Proto 'https' env=HTTPS
+
+ # Proxying to mbs-web-ui container
+ ProxyPass / http://localhost:8080/
+ ProxyPassReverse / http://localhost:8080/
+
+
+ErrorLog logs/ssl-{{ mbs_web_ui_hostname }}_error.log
+TransferLog logs/ssl-{{ mbs_web_ui_hostname }}_access.log
+LogLevel warn
+SSLEngine on
+# https://ssl-config.mozilla.org/#server=apache&version=2.4.6&config=intermediate&openssl=1.0.2k&guideline=5.6
+SSLProtocol             all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+SSLCipherSuite          ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305
+ SSLHonorCipherOrder     off
+
+
+SSLCertificateFile /etc/pki/tls/certs/{{ mbs_web_ui_hostname }}.crt
+SSLCertificateKeyFile /etc/pki/tls/private/{{ mbs_web_ui_hostname }}.key
+SSLCertificateChainFile /etc/pki/tls/certs/{{ mbs_web_ui_hostname }}-CAChain.crt
+
+<Files ~ "\.(cgi|shtml|phtml|php3?)$">
+    SSLOptions +StdEnvVars
+</Files>
+<Directory "/var/www/cgi-bin">
+    SSLOptions +StdEnvVars
+</Directory>
+SetEnvIf User-Agent ".*MSIE.*" \
+         nokeepalive ssl-unclean-shutdown \
+         downgrade-1.0 force-response-1.0
+CustomLog logs/ssl-{{ mbs_web_ui_hostname }}_request.log \
+          "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+</VirtualHost>   

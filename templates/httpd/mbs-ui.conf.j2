@@ -1,0 +1,12 @@
+<VirtualHost *:80>
+   ServerName {{ mbs_web_ui_hostname }}
+   DocumentRoot /var/www/html/
+   CustomLog logs/{{ mbs_web_ui_hostname }}.log combined
+   ErrorLog logs/{{ mbs_web_ui_hostname }}_error.log
+
+   RewriteEngine On
+   RewriteCond $1 !^.well-known
+   RewriteCond %{HTTPS} !=on
+   RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+
+</VirtualHost>

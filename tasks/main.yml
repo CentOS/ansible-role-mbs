@@ -28,6 +28,50 @@
     - tls
     - certs
 
+- block:
+  - import_role:
+      name: podman-host
+    vars:
+      - podman_rootless_users:
+          - mbs-web-ui
+
+  - name: Ensuring container will be able to mount CA for python-requests
+    copy:
+      remote_src: True
+      src: "/etc/pki/tls/certs/{{ pki_hostname }}-CAChain.crt"
+      dest: "/home/mbs-web-ui/{{ pki_hostname }}-CAChain.crt"
+
+  - import_role:
+      name: podman-host
+      tasks_from: rootless-container.yml
+    vars:
+      podman_rootless_containers:
+        - name: mbs-web-ui
+          image: quay.io/centos-infra/mbs-web-ui:latest
+          podman_args: "-e MBSWEB_MBS_API={{ mbs_web_ui_api }} -e MBSWEB_KOJI_WEB_URL={{ mbs_web_ui_kojihub_url }} -e REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/{{ pki_hostname }}-CAChain.crt -v /home/mbs-web-ui/{{ pki_hostname }}-CAChain.crt:/etc/pki/tls/certs/{{ pki_hostname }}-CAChain.crt:Z -p 8080:8080"
+          user: mbs-web-ui
+
+  - include_role:
+      name: httpd
+      tasks_from: pki-tls
+    vars:
+      pki_hostname: "{{ mbs_web_ui_hostname }}"
+
+  - name: Configuring mbs-ui httpd vhost    
+    template:
+      src: "httpd/{{ item }}.j2"
+      dest: "/etc/httpd/conf.d/{{ item }}"
+    with_items:
+      - mbs-ui.conf
+      - ssl-mbs-ui.conf
+    notify:
+      - restart_httpd
+
+  when: mbs_web_ui
+  tags:
+    - mbs-web-ui
+    - podman
+
 - include_tasks: monitoring.yml
   tags:
     - monitoring
